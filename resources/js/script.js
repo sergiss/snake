@@ -1,5 +1,5 @@
 const WIDTH = 640, HEIGHT = 480;
-const CELL_SIZE = 32;
+const CELL_SIZE = 16;
 
 const STEP_TIME = 1 / 60;
 
@@ -16,13 +16,17 @@ const step = (time)=> {
     requestAnimationFrame(step);
 
     const diff = time - startTime;
+    startTime = time;
     const dt = diff / 1000;
     accum += dt;
     while (accum >= STEP_TIME) {
         accum -= STEP_TIME;
 
         // Update
-        if((snake.time += Math.max(0.016, 0.016 * snake.score)) > 1) {
+        snake.time += Math.max(0.016, 0.016 * snake.score);
+        if(snake.time > 1) {
+            snake.time = 0;
+
             let lastX = snake.body[0].x;
             let lastY = snake.body[0].y;
             snake.body[0].x += snake.dirX;
@@ -36,7 +40,7 @@ const step = (time)=> {
                 lastY = y;
             }
         }
-
+    
         // Render
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
         ctx.fillStyle = "#0F0";
@@ -55,7 +59,11 @@ const step = (time)=> {
 
 const newGame = ()=> {
     snake.score = 0;
-    snake.body = [ { x: 0, y: 0 } ];
+    snake.body = [ 
+        { 
+            x: (Math.floor(WIDTH / CELL_SIZE) >> 1), 
+            y: (Math.floor(HEIGHT / CELL_SIZE) >> 1) 
+        } ];
     snake.dirX = 1; // Right
     snake.dirY = 0;
     snake.time = 0;
