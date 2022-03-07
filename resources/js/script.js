@@ -9,6 +9,7 @@ canvas.height = HEIGHT;
 const ctx = canvas.getContext("2d");
 
 const snake = {};
+const board = {};
 
 var startTime = 0, accum = 0;
 
@@ -21,23 +22,30 @@ const step = (time)=> {
     accum += dt;
     while (accum >= STEP_TIME) {
         accum -= STEP_TIME;
-
+        
         // Update
-        snake.time += Math.max(0.016, 0.016 * snake.score);
+        let coords = {};
+        snake.time += 0.016 + 0.001 * snake.score;
         if(snake.time > 1) {
             snake.time = 0;
-
-            let lastX = snake.body[0].x;
-            let lastY = snake.body[0].y;
-            snake.body[0].x += snake.dirX;
-            snake.body[0].y += snake.dirY;
+            let lastIndex = snake.body[0];
+            toCoords(lastIndex, coords);
+            let x = coords.x + snake.dirX;
+            let y = coords.y + snake.dirY;
+            let index = toIndex(x, y);
+            if(snake.map[index] // body collision
+            || x < 0 || y < 0 || x >= WIDTH / CELL_SIZE || y >= HEIGHT / CELL_SIZE) { // bounds collision
+                // game over
+                init();
+                return;
+            }
+            snake.body[0] = index;
+            snake.map = {};
             for(let i = 1; i < snake.body.length; ++i) {
-                let x = snake.body[i].x;
-                let y = snake.body[i].y;
-                snake.body[i].x = lastX;
-                snake.body[i].y = lastY;
-                lastX = x;
-                lastY = y;
+                index = snake.body[i];
+                snake.body[i] = lastIndex;
+                map[lastIndex] = true;
+                lastIndex = index;
             }
         }
     
@@ -45,31 +53,57 @@ const step = (time)=> {
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
         ctx.fillStyle = "#0F0";
         for(let i = 0; i < snake.body.length; ++i) {
-            let part = snake.body[i];
+            toCoords(snake.body[i], coords);
             ctx.fillRect(
-                part.x * CELL_SIZE, 
-                part.y * CELL_SIZE, 
+                coords.x * CELL_SIZE, 
+                coords.y * CELL_SIZE, 
                 CELL_SIZE, 
-                CELL_SIZE);
+                CELL_SIZE
+            );
         }
 
     }
 
 }
 
+const toIndex = (x, y) => {
+    return y * WIDTH + x;
+}
+
+const toCoords = (index, result) => {
+    if(!result) result = {};
+    result.x = index % WIDTH;
+    result.y = (index / WIDTH) >> 0;
+    return result;
+}
+
 const newGame = ()=> {
     snake.score = 0;
-    snake.body = [ 
-        { 
-            x: (Math.floor(WIDTH / CELL_SIZE) >> 1), 
-            y: (Math.floor(HEIGHT / CELL_SIZE) >> 1) 
-        } ];
+    snake.body = [ toIndex(Math.floor(WIDTH / CELL_SIZE) >> 1, Math.floor(HEIGHT / CELL_SIZE) >> 1) ]
     snake.dirX = 1; // Right
     snake.dirY = 0;
     snake.time = 0;
+    snake.map = {};
 }
 
 const init = ()=> {
+    document.addEventListener("keydown", (e)=> {
+        
+        switch(e.code) {
+            case "ArrowLeft":
+                snake.dirX = -1; snake.dirY = 0; snake.time = 2;
+                break;
+            case "ArrowRight":
+                snake.dirX = 1; snake.dirY = 0; snake.time = 2;
+                break;
+            case "ArrowUp":
+                snake.dirX = 0; snake.dirY = -1; snake.time = 2;
+                break;
+            case "ArrowDown":
+                snake.dirX = 0; snake.dirY = 1; snake.time = 2;
+                break;
+        }
+    });
     newGame();
     step(0);
 }
