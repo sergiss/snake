@@ -17,6 +17,7 @@ var startTime = 0, accum = 0;
 
 const step = (time) => {
     requestAnimationFrame(step);
+    
     let coords = {};
     const diff = time - startTime;
     startTime = time;
