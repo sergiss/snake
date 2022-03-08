@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022, Sergio S.- sergi.ss4@gmail.com http://sergiosoriano.com
+ */
+
 const WIDTH = 660, HEIGHT = 495;
 const CELL_SIZE = 32;
 const COLS = Math.floor(WIDTH  / CELL_SIZE);

@@ -15,3 +15,17 @@ canvas {
     height: 480px;
     border-radius: 5px;
 }
+
+a {
+    margin: 10px;
+    font-size: 1.5rem;
+    font-family: monospace, Arial, Helvetica, sans-serif;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
