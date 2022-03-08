@@ -6,8 +6,20 @@ const WIDTH = 660, HEIGHT = 495;
 const CELL_SIZE = 32;
 const COLS = Math.floor(WIDTH  / CELL_SIZE);
 const ROWS = Math.floor(HEIGHT / CELL_SIZE);
+let STEP_TIME = 1 / 60;
 
-const STEP_TIME = 1 / 60;
+document
+    .getElementById('speed')
+    .addEventListener(
+        'input',
+        (e) => {
+            // allow a player only to change speed when the game hasn't progressed
+            if (+snake.score === 0) {
+                STEP_TIME = 1 / +e.target.value / 60;
+            }
+        }
+    );
+
 
 const canvas = document.querySelector("#game");
 canvas.width = WIDTH;
