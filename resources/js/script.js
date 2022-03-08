@@ -83,7 +83,7 @@ const step = (time) => {
     Object.keys(board).map((cell)=> {
         if(board[cell] === 1) { // only food
             toCoords(cell, coords);
-            ctx.fillStyle = "#00F";
+            ctx.fillStyle = "#FF0800";
             ctx.fillRect(
                 coords.x + coords.x * CELL_SIZE,
                 coords.y + coords.y * CELL_SIZE,
