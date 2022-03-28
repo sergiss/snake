@@ -124,16 +124,16 @@ const init = () => {
         let dir = snake.dir;
         switch (e.code) {
             case "ArrowRight":
-                  dir = 6;
+                if(dir !== 4) dir = 6;
                 break;
             case "ArrowLeft":
-                  dir = 4;
+                if(dir !== 6) dir = 4;
                 break;
             case "ArrowDown":
-                  dir = 9;
+                if(dir !== 1) dir = 9;
                 break;
             case "ArrowUp":
-                  dir = 1;
+                if(dir !== 9) dir = 1;
                 break;
         }
         if(dir !== snake.dir) {
